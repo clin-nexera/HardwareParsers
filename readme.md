@@ -3,6 +3,7 @@
 2) Create a virtual environment by typing this into the terminal: 'py -m venv venv'
 3) Activate the virtual environment: '.\venv\Scripts\activate'
 4) Install nexera packages: 'pip install git+https://github.com/GripperDominationOrg/nexera_packages.git'
+5) Install other packages: 'pip install pywin32 tkfilebrowser'
 
 # Running Script
 1) In terminal type: 'py main.py'

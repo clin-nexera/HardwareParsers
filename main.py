@@ -1,7 +1,6 @@
 import argparse
 import csv
 from datetime import datetime
-from email.mime import base
 from nexera_packages.data_management.adapters.validation_gui_experiment_parser import (
     ValidationGUIExperimentParser,
 )
