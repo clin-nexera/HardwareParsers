@@ -6,22 +6,7 @@ from nexera_packages.data_management.adapters.validation_gui_experiment_parser i
     ValidationGUIExperimentParser,
 )
 import os
-from tkinter import filedialog
-
-def get_folder():
-    dirselect = filedialog.Directory()
-    d = dirselect.show()
-    return d
-
-def get_folders():
-    dirselect = filedialog.Directory()
-    dirs = []
-    while True:
-        d = dirselect.show()
-        if not d:
-            break
-        dirs.append(d)
-    return dirs
+from tkfilebrowser import askopendirnames, askopendirname
 
 def get_start_dates(experiment):
     csv = experiment.csv_dfs["pre_pick_process_states"]
@@ -105,12 +90,12 @@ if __name__ == "__main__":
     has_pick_trigger = args.pick_trigger
 
     save_name = input("Enter csv file name (don't include extension)\n")
-    save_path = get_folder()
+    save_path = askopendirname(title="Select Save Folder")
 
     experiment_parser = ValidationGUIExperimentParser()
     data = [["Folder Name", "Start Date", "Start Time", "End Date", "End Time", "Picks", "Success", "Fails", "Vacuum", "Magnetic", "UR", "EoP", "Velocity", "Acceleration"]]
 
-    folders = get_folders()
+    folders = askopendirnames(title="Select Experiment Folders")
     for folder in folders:
         basename = os.path.basename(folder)
         experiment = experiment_parser.parseExperiment(folder, has_pick_trigger)
