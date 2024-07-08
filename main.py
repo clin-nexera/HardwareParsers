@@ -6,6 +6,7 @@ from nexera_packages.data_management.adapters.validation_gui_experiment_parser i
 )
 import os
 from tkfilebrowser import askopendirnames, askopendirname
+from tkinter.filedialog import askdirectory
 
 def get_start_dates(experiment):
     csv = experiment.csv_dfs["pre_pick_process_states"]
@@ -85,16 +86,32 @@ if __name__ == "__main__":
         action="store_true",
         help="Is pick trigger implemented",
     )
+    parser.add_argument(
+        "-nd",
+        "--network-drive",
+        dest="network_drive",
+        action="store_true",
+        help="Are we retrieving files from the network drive",
+    )
     args = parser.parse_args()
     has_pick_trigger = args.pick_trigger
+    is_network_drive = args.network_drive
 
     save_name = input("Enter csv file name (don't include extension)\n")
-    save_path = askopendirname(title="Select Save Folder")
+    save_path = askdirectory(title="Select Save Folder")
 
     experiment_parser = ValidationGUIExperimentParser()
     data = [["Folder Name", "Start Date", "Start Time", "End Date", "End Time", "Picks", "Success", "Fails", "Vacuum", "Magnetic", "UR", "EoP", "Velocity", "Acceleration"]]
 
-    folders = askopendirnames(title="Select Experiment Folders")
+    if is_network_drive:
+        folders = []
+        folder = askdirectory(title="Select an experiment folder")
+        while folder is not None and folder != "":
+            folders.append(folder)
+            folder = askdirectory(title="Select an experiment folder")
+    else:
+        folders = askopendirnames(title="Select Experiment Folders")
+
     for folder in folders:
         basename = os.path.basename(folder)
         experiment = experiment_parser.parseExperiment(folder, has_pick_trigger)
