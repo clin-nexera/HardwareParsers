@@ -5,7 +5,7 @@ from nexera_packages.data_management.adapters.validation_gui_experiment_parser i
     ValidationGUIExperimentParser,
 )
 import os
-from tkfilebrowser import askopendirnames, askopendirname
+from tkfilebrowser import askopendirnames
 from tkinter.filedialog import askdirectory
 
 def get_start_dates(experiment):
@@ -93,14 +93,24 @@ if __name__ == "__main__":
         action="store_true",
         help="Are we retrieving files from the network drive",
     )
+
+    parser.add_argument(
+        "-lg",
+        "--legacy",
+        dest="legacy",
+        action="store_true",
+        help="Is this legacy configs?",
+    )
     args = parser.parse_args()
     has_pick_trigger = args.pick_trigger
     is_network_drive = args.network_drive
+    is_legacy = args.is_legacy
 
     save_name = input("Enter csv file name (don't include extension)\n")
     save_path = askdirectory(title="Select Save Folder")
 
-    experiment_parser = ValidationGUIExperimentParser()
+    version = 1 if is_legacy else 2
+    experiment_parser = ValidationGUIExperimentParser(version)
     data = [["Folder Name", "Start Date", "Start Time", "End Date", "End Time", "Picks", "Success", "Fails", "Vacuum", "Magnetic", "UR", "EoP", "Velocity", "Acceleration"]]
 
     if is_network_drive:
