@@ -130,11 +130,11 @@ def get_pick_counts(csv_dfs):
 
 def get_trigger_counts(csv_dfs):
     csv = csv_dfs["pick_execution"]
-    counts = csv["pick_execution"]
-    vacuum = counts["Vacuum"]
-    magnetic = counts["Magnetic Sensor"]
-    ur = counts["UR"]
-    eop = counts["End of Path"]
+    counts = csv["pick_activation"].value_counts()
+    vacuum = counts["Vacuum"] if "Vacuum" in counts.keys() else 0
+    magnetic = counts["Magnetic Sensor"] if "Magnetic Sensor" in counts.keys() else 0
+    ur = counts["UR"] if "UR" in counts.keys() else 0
+    eop = counts["End of Path"] if "End of Path" in counts.keys() else 0
 
     return vacuum, magnetic, ur, eop
 
