@@ -26,7 +26,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     has_pick_trigger = args.pick_trigger
     is_network_drive = args.network_drive
-    is_legacy = args.legacy
 
     save_name = input("Enter csv file name (don't include extension)\n")
     save_path = askdirectory(title="Select Save Folder")
