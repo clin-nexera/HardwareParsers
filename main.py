@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
     for folder in folders:
         basename = os.path.basename(folder)
-        csv_dfs = parse_data(folder, has_pick_trigger)
+        csv_dfs = parse_data(folder)
         picks, success, fails = get_pick_counts(csv_dfs)
         start_date, start_time = get_start_dates(csv_dfs)
         end_date, end_time = get_end_dates(csv_dfs)
