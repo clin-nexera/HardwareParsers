@@ -123,8 +123,8 @@ def get_pick_counts(csv_dfs):
     csv = csv_dfs["pick_execution"]
     num_picks = len(csv.index)
     counts = csv["is_successful_pick"].value_counts()
-    successful = counts[True]
-    failed_picks = counts[False]
+    successful = counts[True] if True in counts.keys() else 0
+    failed_picks = counts[False] if False in counts.keys() else 0
     return num_picks, successful, failed_picks
 
 
