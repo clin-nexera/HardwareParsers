@@ -21,13 +21,13 @@ HEADERS = [
 
 ### FUNCTIONS ###
 def aggregate_pick_data(csv_dfs):
-    data = [[HEADERS]]
+    data = [HEADERS]
     pick_ids = get_all_pick_ids(csv_dfs)
 
     for idx, pick_id in enumerate(pick_ids):
         pick_id = pick_id
-        pick_start_date = get_pick_start_date(csv_dfs, pick_id)
-        pick_start_time = get_pick_start_time(csv_dfs, pick_id)
+        pick_start_date = str(get_pick_start_date(csv_dfs, pick_id))
+        pick_start_time = str(get_pick_start_time(csv_dfs, pick_id))
         capture_count = idx
         pick_attempts = get_pick_attempts(csv_dfs, pick_id)
         total_picks = get_total_picks(csv_dfs, pick_id)
@@ -45,8 +45,8 @@ def aggregate_pick_data(csv_dfs):
         is_successful = get_is_successful(csv_dfs, pick_id)
         pick_execution_time = get_pick_exec_time(csv_dfs, pick_id)
 
-        pick_end_date = get_pick_end_date(csv_dfs, pick_id)
-        pick_end_time = get_pick_end_time(csv_dfs, pick_id)
+        pick_end_date = str(get_pick_end_date(csv_dfs, pick_id))
+        pick_end_time = str(get_pick_end_time(csv_dfs, pick_id))
 
         row = [
             pick_id,
@@ -75,7 +75,7 @@ def aggregate_pick_data(csv_dfs):
 
 def get_all_pick_ids(csv_dfs):
     df = csv_dfs["pre_pick_process_states"]
-    return list(_get_var(df, "index"))
+    return list(df["index"])
 
 
 def get_pick_start_time(csv_dfs, pick_id):
@@ -150,7 +150,7 @@ def _get_row_at_pick_id(df, pick_id):
 
 def _get_var(df, var_name):
     try:
-        var = str(df[var_name])
+        var = df[var_name].iloc[0]
     except:
         var = "N/A"
 
@@ -159,6 +159,7 @@ def _get_var(df, var_name):
 
 def _get_var_for_pick(df, pick_id, var_name):
     row = _get_row_at_pick_id(df, pick_id)
+
     if len(row) == 0:
         var = "DNR"
     else:

@@ -48,16 +48,21 @@ if __name__ == "__main__":
     is_network_drive = args.network_drive
 
     save_name = input("Enter csv file name (don't include extension)\n")
-    save_path = askdirectory(title="Select Save Folder")
+    # save_folder = askdirectory(title="Select Save Folder")
 
-    if is_network_drive:
-        folders = []
-        folder = askdirectory(title="Select an experiment folder")
-        while folder is not None and folder != "":
-            folders.append(folder)
-            folder = askdirectory(title="Select an experiment folder")
-    else:
-        folders = askopendirnames(title="Select Experiment Folders")
+    # if is_network_drive:
+    #     folders = []
+    #     folder = askdirectory(title="Select an experiment folder")
+    #     while folder is not None and folder != "":
+    #         folders.append(folder)
+    #         folder = askdirectory(title="Select an experiment folder")
+    # else:
+    #     folders = askopendirnames(title="Select Experiment Folders")
+    save_folder = "./"
+    folders = [
+        r"D:\Automated_Testing_Runs\test_data\20240807_080131_test_data",
+        r"D:\Automated_Testing_Runs\test_data\20240807_101540_test_data",
+    ]
 
     summary_data = [SUMMARY_HEADERS]
 
@@ -71,12 +76,12 @@ if __name__ == "__main__":
 
         # Per Pick
         pick_data = aggregate_pick_data(csv_dfs)
-        save_path = os.path.join(save_path, f"{save_name}_{basename}.csv")
+        save_path = os.path.join(save_folder, f"{save_name}_{basename}.csv")
         with open(save_path, "w") as f:
             write = csv.writer(f, lineterminator="\n")
             write.writerows(pick_data)
 
-    save_path = os.path.join(save_path, save_name + ".csv")
+    save_path = os.path.join(save_folder, save_name + ".csv")
     with open(save_path, "w") as f:
         write = csv.writer(f, lineterminator="\n")
         write.writerows(summary_data)
