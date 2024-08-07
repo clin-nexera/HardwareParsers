@@ -1,3 +1,5 @@
+from datetime import datetime
+
 HEADERS = [
     "pick_id",
     "start_date",
@@ -26,8 +28,8 @@ def aggregate_pick_data(csv_dfs):
 
     for idx, pick_id in enumerate(pick_ids):
         pick_id = pick_id
-        pick_start_date = str(get_pick_start_date(csv_dfs, pick_id))
-        pick_start_time = str(get_pick_start_time(csv_dfs, pick_id))
+        pick_start_date = get_pick_start_date(csv_dfs, pick_id)
+        pick_start_time = get_pick_start_time(csv_dfs, pick_id)
         capture_count = idx
         pick_attempts = get_pick_attempts(csv_dfs, pick_id)
         total_picks = get_total_picks(csv_dfs, pick_id)
@@ -45,8 +47,8 @@ def aggregate_pick_data(csv_dfs):
         is_successful = get_is_successful(csv_dfs, pick_id)
         pick_execution_time = get_pick_exec_time(csv_dfs, pick_id)
 
-        pick_end_date = str(get_pick_end_date(csv_dfs, pick_id))
-        pick_end_time = str(get_pick_end_time(csv_dfs, pick_id))
+        pick_end_date = get_pick_end_date(csv_dfs, pick_id)
+        pick_end_time = get_pick_end_time(csv_dfs, pick_id)
 
         row = [
             pick_id,
@@ -65,7 +67,7 @@ def aggregate_pick_data(csv_dfs):
             is_successful,
             pick_execution_time,
             pick_end_date,
-            pick_end_time
+            pick_end_time,
         ]
 
         data.append(row)
@@ -79,7 +81,11 @@ def get_all_pick_ids(csv_dfs):
 
 
 def get_pick_start_time(csv_dfs, pick_id):
-    return get_pre_pick_var_for_pick(csv_dfs, pick_id, "pick_start_time")
+    start_time = str(get_pre_pick_var_for_pick(csv_dfs, pick_id, "pick_start_time"))
+    if start_time not in ["N/A", "DNR"]:
+        time_obj = datetime.strptime(start_time, "%H%M%S")
+        start_time = time_obj.strftime("%H:%M:%S")
+    return start_time
 
 
 def get_pick_start_date(csv_dfs, pick_id):
@@ -136,7 +142,11 @@ def get_pick_exec_time(csv_dfs, pick_id):
 
 
 def get_pick_end_time(csv_dfs, pick_id):
-    return get_post_pick_var_for_pick(csv_dfs, pick_id, "pick_end_time")
+    end_time = str(get_post_pick_var_for_pick(csv_dfs, pick_id, "pick_end_time"))
+    if end_time not in ["N/A", "DNR"]:
+        time_obj = datetime.strptime(end_time, "%H%M%S")
+        end_time = time_obj.strftime("%H:%M:%S")
+    return end_time
 
 
 def get_pick_end_date(csv_dfs, pick_id):
