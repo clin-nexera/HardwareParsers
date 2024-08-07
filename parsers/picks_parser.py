@@ -74,8 +74,8 @@ def aggregate_pick_data(csv_dfs):
 
 
 def get_all_pick_ids(csv_dfs):
-    pick_ids = get_pre_pick_var_for_pick(csv_dfs, "index")
-    return list(pick_ids)
+    df = csv_dfs["pre_pick_process_states"]
+    return list(_get_var(df, "index"))
 
 
 def get_pick_start_time(csv_dfs, pick_id):
