@@ -83,6 +83,7 @@ def get_all_pick_ids(csv_dfs):
 def get_pick_start_time(csv_dfs, pick_id):
     start_time = str(get_pre_pick_var_for_pick(csv_dfs, pick_id, "pick_start_time"))
     if start_time not in ["N/A", "DNR"]:
+        start_time = start_time.zfill(6)
         time_obj = datetime.strptime(start_time, "%H%M%S")
         start_time = time_obj.strftime("%H:%M:%S")
     return start_time
@@ -144,6 +145,7 @@ def get_pick_exec_time(csv_dfs, pick_id):
 def get_pick_end_time(csv_dfs, pick_id):
     end_time = str(get_post_pick_var_for_pick(csv_dfs, pick_id, "pick_end_time"))
     if end_time not in ["N/A", "DNR"]:
+        end_time = end_time.zfill(6)
         time_obj = datetime.strptime(end_time, "%H%M%S")
         end_time = time_obj.strftime("%H:%M:%S")
     return end_time
