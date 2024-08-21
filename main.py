@@ -65,7 +65,7 @@ if __name__ == "__main__":
     for folder in folders:
         basename = os.path.basename(folder)
         exp_number = basename[:15]
-        lockout_path = os.path.join(basename, exp_number)
+        lockout_path = os.path.join(basename, exp_number+"_lockout.txt")
         csv_dfs = parse_data(folder)
 
         # Summary
