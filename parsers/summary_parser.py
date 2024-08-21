@@ -1,6 +1,7 @@
+import os
 from datetime import datetime
 
-def summarize_folder(has_pick_trigger, basename, csv_dfs):
+def summarize_folder(has_pick_trigger, basename, csv_dfs, lockout_path):
     picks, success, fails = get_pick_counts(csv_dfs)
     start_date, start_time = get_start_dates(csv_dfs)
     end_date, end_time = get_end_dates(csv_dfs)
@@ -10,6 +11,8 @@ def summarize_folder(has_pick_trigger, basename, csv_dfs):
     )
 
     vel, acc = get_vel_acc(csv_dfs)
+
+    num_lockouts = get_num_lockouts(lockout_path)
 
     row = [
         basename,
@@ -26,6 +29,7 @@ def summarize_folder(has_pick_trigger, basename, csv_dfs):
         eop,
         vel,
         acc,
+        num_lockouts,
     ]
     return row
 
@@ -81,3 +85,12 @@ def get_vel_acc(csv_dfs):
     vel = csv["pose_path_2_above_drop_bin_vel"][0]
     acc = csv["pose_path_2_above_drop_bin_acc"][0]
     return vel, acc
+
+def get_num_lockouts(text_path):
+    if not os.path.exists(text_path):
+        return None
+
+    with open(text_path, "r") as f:
+        num_lines = len(f.readlines())
+
+    return num_lines

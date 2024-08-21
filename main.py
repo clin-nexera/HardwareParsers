@@ -24,6 +24,7 @@ SUMMARY_HEADERS = [
     "EoP",
     "Velocity",
     "Acceleration",
+    "Num Lockouts"
 ]
 
 if __name__ == "__main__":
@@ -63,10 +64,12 @@ if __name__ == "__main__":
 
     for folder in folders:
         basename = os.path.basename(folder)
+        exp_number = basename[:15]
+        lockout_path = os.path.join(basename, exp_number)
         csv_dfs = parse_data(folder)
 
         # Summary
-        row = summarize_folder(has_pick_trigger, basename, csv_dfs)
+        row = summarize_folder(has_pick_trigger, basename, csv_dfs, lockout_path)
         summary_data.append(row)
 
         # Per Pick
