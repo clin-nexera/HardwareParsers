@@ -65,10 +65,10 @@ def get_csv_paths(csv_directory_path: str, csv_names: list[str]):
     csv_paths = {}
 
     for csv in csv_names:
-        csv_paths[csv] = os.path.join(
-            csv_directory_path,
-            next((name for name in csv_filenames if csv in name), None),
-        )
+        find_name = next((name for name in csv_filenames if csv in name), None)
+        if find_name is None:
+            raise FileNotFoundError(f"ERROR - The csv file {csv} could not be found")
+        csv_paths[csv] = os.path.join(csv_directory_path, find_name)
 
     return csv_paths
 

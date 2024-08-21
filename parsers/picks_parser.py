@@ -1,29 +1,8 @@
 from datetime import datetime
 
-HEADERS = [
-    "pick_id",
-    "start_date",
-    "start_time",
-    "capture_count",
-    "pick_attempts",
-    "total_picks",
-    "bin_region",
-    "gen_source",
-    "bin_empty",
-    "gripper_num",
-    "hor_vel",
-    "hor_acc",
-    "pick_activation",
-    "is_successful",
-    "pick_exec_time",
-    "pick_end_date",
-    "pick_end_time",
-]
-
-
 ### FUNCTIONS ###
 def aggregate_pick_data(csv_dfs):
-    data = [HEADERS]
+    data = []
     pick_ids = get_all_pick_ids(csv_dfs)
 
     for idx, pick_id in enumerate(pick_ids):

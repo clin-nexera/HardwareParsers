@@ -15,16 +15,42 @@ SUMMARY_HEADERS = [
     "Start Time",
     "End Date",
     "End Time",
+    "Gripper Number",
     "Picks",
+    "Success Rate",
     "Success",
     "Fails",
+    "Vacuum Rate",
+    "Magnetic Rate",
+    "UR Rate",
+    "EoP Rate",
     "Vacuum",
     "Magnetic",
     "UR",
     "EoP",
     "Velocity",
     "Acceleration",
-    "Num Lockouts"
+    "Num Lockouts",
+]
+
+PICKS_HEADER = [
+    "pick_id",
+    "start_date",
+    "start_time",
+    "capture_count",
+    "pick_attempts",
+    "total_picks",
+    "bin_region",
+    "gen_source",
+    "bin_empty",
+    "gripper_num",
+    "hor_vel",
+    "hor_acc",
+    "pick_activation",
+    "is_successful",
+    "pick_exec_time",
+    "pick_end_date",
+    "pick_end_time",
 ]
 
 if __name__ == "__main__":
@@ -61,25 +87,38 @@ if __name__ == "__main__":
         folders = askopendirnames(title="Select Experiment Folders")
 
     summary_data = [SUMMARY_HEADERS]
+    all_picks_data = [PICKS_HEADER]
 
     for folder in folders:
-        basename = os.path.basename(folder)
-        exp_number = basename[:15]
-        lockout_path = os.path.join(basename, exp_number+"_lockout.txt")
-        csv_dfs = parse_data(folder)
+        try:
+            basename = os.path.basename(folder)
+            exp_number = basename[:15]
+            lockout_path = os.path.join(basename, exp_number+"_lockout.txt")
+            csv_dfs = parse_data(folder)
 
-        # Summary
-        row = summarize_folder(has_pick_trigger, basename, csv_dfs, lockout_path)
-        summary_data.append(row)
+            # Summary
+            row = summarize_folder(has_pick_trigger, basename, csv_dfs, lockout_path)
+            summary_data.append(row)
 
-        # Per Pick
-        pick_data = aggregate_pick_data(csv_dfs)
-        save_path = os.path.join(save_folder, f"{save_name}_{basename}.csv")
-        with open(save_path, "w") as f:
-            write = csv.writer(f, lineterminator="\n")
-            write.writerows(pick_data)
+            # Per Pick
+            pick_data = aggregate_pick_data(csv_dfs)
+            all_picks_data.extend(pick_data)
 
-    save_path = os.path.join(save_folder, save_name + ".csv")
-    with open(save_path, "w") as f:
+            save_path = os.path.join(save_folder, f"{save_name}_{basename}.csv")
+            with open(save_path, "w") as f:
+                write = csv.writer(f, lineterminator="\n")
+                write.writerow(PICKS_HEADER)
+                write.writerows(pick_data)
+
+        except Exception as e:
+            print(str(e))
+
+    summary_save_path = os.path.join(save_folder, save_name + "_summary.csv")
+    with open(summary_save_path, "w") as f:
         write = csv.writer(f, lineterminator="\n")
         write.writerows(summary_data)
+
+    all_picks_save_path = os.path.join(save_folder, save_name + "_all_picks.csv")
+    with open(all_picks_save_path, "w") as f:
+        write = csv.writer(f, lineterminator="\n")
+        write.writerows(all_picks_data)

@@ -6,6 +6,7 @@ def summarize_folder(has_pick_trigger, basename, csv_dfs, lockout_path):
     start_date, start_time = get_start_dates(csv_dfs)
     end_date, end_time = get_end_dates(csv_dfs)
 
+    mode = get_gripper_mode(csv_dfs)
     vacuum, magnetic, ur, eop = (
         get_trigger_counts(csv_dfs) if has_pick_trigger else (None, None, None, None)
     )
@@ -20,9 +21,15 @@ def summarize_folder(has_pick_trigger, basename, csv_dfs, lockout_path):
         start_time,
         end_date,
         end_time,
+        mode,
         picks,
+        float(success)/float(picks),
         success,
         fails,
+        float(vacuum)/float(picks),
+        float(magnetic)/float(picks),
+        float(ur)/float(picks),
+        float(eop)/float(picks),
         vacuum,
         magnetic,
         ur,
@@ -67,6 +74,11 @@ def get_pick_counts(csv_dfs):
     successful = counts[True] if True in counts.keys() else 0
     failed_picks = counts[False] if False in counts.keys() else 0
     return num_picks, successful, failed_picks
+
+
+def get_gripper_mode(csv_dfs):
+    csv = csv_dfs["mode_selection"]
+    return csv["gripper_mode_num"][0]
 
 
 def get_trigger_counts(csv_dfs):
