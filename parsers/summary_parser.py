@@ -1,8 +1,10 @@
 import os
 from datetime import datetime
 
-def summarize_folder(has_pick_trigger, basename, csv_dfs, lockout_path):
-    picks, success, fails = get_pick_counts(csv_dfs)
+def summarize_folder(has_pick_trigger, basename, csv_dfs, pick_attempts, total_lockouts):
+    total_picks = pick_attempts + total_lockouts
+
+    success, fails = get_pick_counts(csv_dfs)
     start_date, start_time = get_start_dates(csv_dfs)
     end_date, end_time = get_end_dates(csv_dfs)
 
@@ -13,8 +15,6 @@ def summarize_folder(has_pick_trigger, basename, csv_dfs, lockout_path):
 
     vel, acc = get_vel_acc(csv_dfs)
 
-    num_lockouts = get_num_lockouts(lockout_path)
-
     row = [
         basename,
         start_date,
@@ -22,21 +22,22 @@ def summarize_folder(has_pick_trigger, basename, csv_dfs, lockout_path):
         end_date,
         end_time,
         mode,
-        picks,
-        float(success)/float(picks),
+        pick_attempts,
+        float(success) / float(pick_attempts),
         success,
         fails,
-        float(vacuum)/float(picks),
-        float(magnetic)/float(picks),
-        float(ur)/float(picks),
-        float(eop)/float(picks),
+        float(vacuum) / float(pick_attempts),
+        float(magnetic) / float(pick_attempts),
+        float(ur) / float(pick_attempts),
+        float(eop) / float(pick_attempts),
         vacuum,
         magnetic,
         ur,
         eop,
         vel,
         acc,
-        num_lockouts,
+        total_lockouts,
+        total_picks,
     ]
     return row
 
@@ -69,11 +70,10 @@ def get_end_dates(csv_dfs):
 
 def get_pick_counts(csv_dfs):
     csv = csv_dfs["pick_execution"]
-    num_picks = len(csv.index)
     counts = csv["is_successful_pick"].value_counts()
     successful = counts[True] if True in counts.keys() else 0
     failed_picks = counts[False] if False in counts.keys() else 0
-    return num_picks, successful, failed_picks
+    return successful, failed_picks
 
 
 def get_gripper_mode(csv_dfs):

@@ -4,14 +4,15 @@ from datetime import datetime
 def aggregate_pick_data(csv_dfs):
     data = []
     pick_ids = get_all_pick_ids(csv_dfs)
+    total_picks = 0
+    num_lockouts = 0
 
     for idx, pick_id in enumerate(pick_ids):
         pick_id = pick_id
         pick_start_date = get_pick_start_date(csv_dfs, pick_id)
         pick_start_time = get_pick_start_time(csv_dfs, pick_id)
-        capture_count = idx
-        pick_attempts = get_pick_attempts(csv_dfs, pick_id)
-        total_picks = get_total_picks(csv_dfs, pick_id)
+        capture_count = idx 
+        pick_attempts = get_pick_attempts(csv_dfs, pick_id) 
         bin_region = get_bin_region(csv_dfs, pick_id)
 
         gen_source = get_gen_source(csv_dfs, pick_id)
@@ -29,6 +30,13 @@ def aggregate_pick_data(csv_dfs):
         pick_end_date = get_pick_end_date(csv_dfs, pick_id)
         pick_end_time = get_pick_end_time(csv_dfs, pick_id)
 
+        if pick_end_time != "DNR":
+            total_picks += 1
+        
+        if gripper_num != "DNR" and pick_end_time == "DNR":
+            num_lockouts += 1
+
+
         row = [
             pick_id,
             pick_start_date,
@@ -36,6 +44,7 @@ def aggregate_pick_data(csv_dfs):
             capture_count,
             pick_attempts,
             total_picks,
+            num_lockouts, 
             bin_region,
             gen_source,
             bin_empty,
@@ -51,7 +60,7 @@ def aggregate_pick_data(csv_dfs):
 
         data.append(row)
 
-    return data
+    return total_picks, num_lockouts, data
 
 
 def get_all_pick_ids(csv_dfs):

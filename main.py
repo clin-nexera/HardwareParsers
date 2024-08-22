@@ -1,5 +1,6 @@
 import argparse
 import csv
+from functools import total_ordering
 import os
 from tkfilebrowser import askopendirnames
 from tkinter.filedialog import askdirectory
@@ -16,7 +17,7 @@ SUMMARY_HEADERS = [
     "End Date",
     "End Time",
     "Gripper Number",
-    "Picks",
+    "Pick Attempts",
     "Success Rate",
     "Success",
     "Fails",
@@ -31,6 +32,7 @@ SUMMARY_HEADERS = [
     "Velocity",
     "Acceleration",
     "Num Lockouts",
+    "Total Picks",
 ]
 
 PICKS_HEADER = [
@@ -40,6 +42,7 @@ PICKS_HEADER = [
     "capture_count",
     "pick_attempts",
     "total_picks",
+    "total_lockouts",
     "bin_region",
     "gen_source",
     "bin_empty",
@@ -96,13 +99,13 @@ if __name__ == "__main__":
             lockout_path = os.path.join(folder, exp_number+"_lockout.txt")
             csv_dfs = parse_data(folder)
 
-            # Summary
-            row = summarize_folder(has_pick_trigger, basename, csv_dfs, lockout_path)
-            summary_data.append(row)
-
             # Per Pick
-            pick_data = aggregate_pick_data(csv_dfs)
+            total_picks, total_lockouts, pick_data = aggregate_pick_data(csv_dfs)
             all_picks_data.extend(pick_data)
+
+            # Summary
+            row = summarize_folder(has_pick_trigger, basename, csv_dfs, total_picks, total_lockouts)
+            summary_data.append(row)
 
             save_path = os.path.join(save_folder, f"{save_name}_{basename}.csv")
             with open(save_path, "w") as f:
