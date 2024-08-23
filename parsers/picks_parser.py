@@ -2,7 +2,8 @@ from datetime import datetime
 
 ### FUNCTIONS ###
 def aggregate_pick_data(csv_dfs):
-    data = []
+    data_all = []
+    data_filtered = []
     pick_ids = get_all_pick_ids(csv_dfs)
     total_picks = 0
     num_lockouts = 0
@@ -32,10 +33,9 @@ def aggregate_pick_data(csv_dfs):
 
         if pick_end_time != "DNR":
             total_picks += 1
-        
+
         if gripper_num != "DNR" and pick_end_time == "DNR":
             num_lockouts += 1
-
 
         row = [
             pick_id,
@@ -58,9 +58,12 @@ def aggregate_pick_data(csv_dfs):
             pick_end_time,
         ]
 
-        data.append(row)
+        if pick_end_time != "DNR":
+            data_filtered.append(row)
 
-    return total_picks, num_lockouts, data
+        data_all.append(row)
+
+    return total_picks, num_lockouts, data_all, data_filtered
 
 
 def get_all_pick_ids(csv_dfs):

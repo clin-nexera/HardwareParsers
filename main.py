@@ -100,18 +100,24 @@ if __name__ == "__main__":
             csv_dfs = parse_data(folder)
 
             # Per Pick
-            total_picks, total_lockouts, pick_data = aggregate_pick_data(csv_dfs)
-            all_picks_data.extend(pick_data)
+            total_picks, total_lockouts, pick_data_all, pick_data_filtered = aggregate_pick_data(csv_dfs)
+            all_picks_data.extend(pick_data_all)
 
             # Summary
             row = summarize_folder(has_pick_trigger, basename, csv_dfs, total_picks, total_lockouts)
             summary_data.append(row)
 
-            save_path = os.path.join(save_folder, f"{save_name}_{basename}.csv")
+            save_path = os.path.join(save_folder, f"{save_name}_{basename}_all.csv")
             with open(save_path, "w") as f:
                 write = csv.writer(f, lineterminator="\n")
                 write.writerow(PICKS_HEADER)
-                write.writerows(pick_data)
+                write.writerows(pick_data_all)
+
+            save_path = os.path.join(save_folder, f"{save_name}_{basename}_filtered.csv")
+            with open(save_path, "w") as f:
+                write = csv.writer(f, lineterminator="\n")
+                write.writerow(PICKS_HEADER)
+                write.writerows(pick_data_filtered)
 
         except Exception as e:
             print(str(e))
