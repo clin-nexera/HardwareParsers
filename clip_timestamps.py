@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime, timedelta
 from tkinter.filedialog import askopenfilename, askdirectory
 
@@ -31,17 +32,23 @@ if __name__ == "__main__":
     with open(timestamps_path, "r") as f:
         timestamps_text = f.read()
 
-    timestamps = timestamps_text.split("\n")
+    timestamps_data = timestamps_text.split("\n")
     
-    for timestamp in timestamps:
-        if timestamp.strip() == "":
+    for timestamp_data in timestamps_data:
+        if timestamp_data.strip() == "":
+            continue
+        
+        find_timestamp = re.match(r"^\d{4}\\\d{2}\\\d{2} \d{2}:\d{2}:\d{2}",string=timestamp_data) 
+        if find_timestamp is None:
+            print(f"Could not find this time stamp {timestamp_data}")
             continue
 
-        event_time = datetime.strptime(timestamp, "%Y\\%m\\%d %H:%M:%S")
+        timestamp_start, timestamp_end = find_timestamp.span()
+        event_time = datetime.strptime(timestamp_data[timestamp_start, timestamp_end], "%Y\\%m\\%d %H:%M:%S")
         event_time_str = event_time.strftime("%Y-%m-%d_%H-%M_%S")
 
         if event_time < clip_start_time or event_time > clip_end_time:
-            print(f"!!! Timestamp Not Within This Clip: {timestamp} | {event_time_str} !!!")
+            print(f"!!! Timestamp Not Within This Clip: {timestamp_data} | {event_time_str} !!!")
             continue
         
         event_time_start = event_time - timedelta(seconds = int(VIDEO_CLIP_TIME_S/2))

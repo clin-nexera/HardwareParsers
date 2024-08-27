@@ -91,6 +91,7 @@ if __name__ == "__main__":
 
     summary_data = [SUMMARY_HEADERS]
     all_picks_data = [PICKS_HEADER]
+    all_picks_filtered_data = [PICKS_HEADER]
 
     for folder in folders:
         try:
@@ -102,6 +103,7 @@ if __name__ == "__main__":
             # Per Pick
             total_picks, total_lockouts, pick_data_all, pick_data_filtered = aggregate_pick_data(csv_dfs)
             all_picks_data.extend(pick_data_all)
+            all_picks_filtered_data.extend(pick_data_filtered)
 
             # Summary
             row = summarize_folder(has_pick_trigger, basename, csv_dfs, total_picks, total_lockouts)
@@ -131,3 +133,8 @@ if __name__ == "__main__":
     with open(all_picks_save_path, "w") as f:
         write = csv.writer(f, lineterminator="\n")
         write.writerows(all_picks_data)
+
+    all_picks_filtered_save_path = os.path.join(save_folder, save_name + "_all_picks_filtered.csv")
+    with open(all_picks_filtered_save_path, "w") as f:
+        write = csv.writer(f, lineterminator="\n")
+        write.writerows(all_picks_filtered_data)
