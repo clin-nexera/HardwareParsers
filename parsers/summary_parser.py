@@ -15,6 +15,8 @@ def summarize_folder(has_pick_trigger, basename, csv_dfs, pick_attempts, total_l
 
     vel, acc = get_vel_acc(csv_dfs)
 
+    hours = get_total_hours(csv_dfs)
+
     row = [
         basename,
         start_date,
@@ -38,6 +40,7 @@ def summarize_folder(has_pick_trigger, basename, csv_dfs, pick_attempts, total_l
         acc,
         total_lockouts,
         total_picks,
+        total_picks / hours
     ]
     return row
 
@@ -66,6 +69,20 @@ def get_end_dates(csv_dfs):
     time_reformatted = time_obj.strftime("%H:%M")
 
     return date_reformatted, time_reformatted
+
+def get_total_hours(csv_dfs):
+    csv_start = csv_dfs["pre_pick_process_states"]
+    date_start = str(csv_start["pick_start_date"][0])
+    time_start = str(csv_start["pick_start_time"][0])
+    start_date_obj = datetime.strptime(date_start+time_start, "%Y%m%d%H%M%S")
+
+    csv_end = csv_dfs["post_pick_process_states"]
+    num = len(csv_end["index"]) - 1
+    date_end = str(csv_end["pick_end_date"][num])
+    time_end = str(csv_end["pick_end_time"][num])
+    end_date_obj = datetime.strptime(date_end+time_end, "%Y%m%d%H%M%S")
+
+    return (end_date_obj - start_date_obj).total_seconds() / 3600.0
 
 
 def get_pick_counts(csv_dfs):

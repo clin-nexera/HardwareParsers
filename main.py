@@ -1,11 +1,11 @@
 import argparse
 import csv
-from functools import total_ordering
 import os
+from distutils.dir_util import copy_tree
 from tkfilebrowser import askopendirnames
 from tkinter.filedialog import askdirectory
 
-from parsers.general import parse_data
+from parsers.general import get_csv_file_name, parse_data
 from parsers.picks_parser import aggregate_pick_data
 from parsers.summary_parser import summarize_folder
 
@@ -31,8 +31,9 @@ SUMMARY_HEADERS = [
     "EoP",
     "Velocity",
     "Acceleration",
-    "Num Lockouts",
+    "Num Incomplete Picks",
     "Total Picks",
+    "Picks Per Hour",
 ]
 
 PICKS_HEADER = [
@@ -77,7 +78,8 @@ if __name__ == "__main__":
     has_pick_trigger = args.pick_trigger
     is_network_drive = args.network_drive
 
-    save_name = input("Enter csv file name (don't include extension)\n")
+    folder_date = input("Enter date (E.g. Aug29)\n")
+    station_name = input("Enter station name (E.g. Delta)\n")
     save_folder = askdirectory(title="Select Save Folder")
 
     if is_network_drive:
@@ -89,6 +91,22 @@ if __name__ == "__main__":
     else:
         folders = askopendirnames(title="Select Experiment Folders")
 
+    data_folder_path = os.path.join(
+        save_folder, f"{folder_date}_DailySummary_{station_name}_2024"
+    )
+    csv_folder_path = os.path.join(
+        data_folder_path, f"{folder_date}_DailySummary_CSVData_{station_name}_2024"
+    )
+    parsed_folder_path = os.path.join(
+        data_folder_path, f"{folder_date}_DailySummary_ParserData_{station_name}_2024"
+    )
+
+    if not os.path.exists(csv_folder_path):
+        os.makedirs(csv_folder_path)
+
+    if not os.path.exists(parsed_folder_path):
+        os.makedirs(parsed_folder_path)
+
     summary_data = [SUMMARY_HEADERS]
     all_picks_data = [PICKS_HEADER]
     all_picks_filtered_data = [PICKS_HEADER]
@@ -97,25 +115,39 @@ if __name__ == "__main__":
         try:
             basename = os.path.basename(folder)
             exp_number = basename[:15]
-            lockout_path = os.path.join(folder, exp_number+"_lockout.txt")
+            lockout_path = os.path.join(folder, exp_number + "_lockout.txt")
+
+            csv_file_name = get_csv_file_name(folder)
+            copy_tree(os.path.join(folder, csv_file_name), os.path.join(csv_folder_path,csv_file_name))
+
             csv_dfs = parse_data(folder)
 
             # Per Pick
-            total_picks, total_lockouts, pick_data_all, pick_data_filtered = aggregate_pick_data(csv_dfs)
+            total_picks, total_lockouts, pick_data_all, pick_data_filtered = (
+                aggregate_pick_data(csv_dfs)
+            )
             all_picks_data.extend(pick_data_all)
             all_picks_filtered_data.extend(pick_data_filtered)
 
             # Summary
-            row = summarize_folder(has_pick_trigger, basename, csv_dfs, total_picks, total_lockouts)
+            row = summarize_folder(
+                has_pick_trigger, basename, csv_dfs, total_picks, total_lockouts
+            )
             summary_data.append(row)
 
-            save_path = os.path.join(save_folder, f"{save_name}_{basename}_all.csv")
+            save_path = os.path.join(
+                parsed_folder_path,
+                f"{folder_date}_DailySummary_{station_name}_2024_{basename}_all.csv",
+            )
             with open(save_path, "w") as f:
                 write = csv.writer(f, lineterminator="\n")
                 write.writerow(PICKS_HEADER)
                 write.writerows(pick_data_all)
 
-            save_path = os.path.join(save_folder, f"{save_name}_{basename}_filtered.csv")
+            save_path = os.path.join(
+                parsed_folder_path,
+                f"{folder_date}_DailySummary_{station_name}_2024_{basename}_filtered.csv",
+            )
             with open(save_path, "w") as f:
                 write = csv.writer(f, lineterminator="\n")
                 write.writerow(PICKS_HEADER)
@@ -124,17 +156,24 @@ if __name__ == "__main__":
         except Exception as e:
             print(str(e))
 
-    summary_save_path = os.path.join(save_folder, save_name + "_summary.csv")
+    summary_save_path = os.path.join(
+        data_folder_path, f"{folder_date}_DailySummary_2024_{station_name}_summary.csv"
+    )
     with open(summary_save_path, "w") as f:
         write = csv.writer(f, lineterminator="\n")
         write.writerows(summary_data)
 
-    all_picks_save_path = os.path.join(save_folder, save_name + "_all_picks.csv")
+    all_picks_save_path = os.path.join(
+        data_folder_path, f"{folder_date}_DailySummary_2024_{station_name}_all_picks.csv"
+    )
     with open(all_picks_save_path, "w") as f:
         write = csv.writer(f, lineterminator="\n")
         write.writerows(all_picks_data)
 
-    all_picks_filtered_save_path = os.path.join(save_folder, save_name + "_all_picks_filtered.csv")
+    all_picks_filtered_save_path = os.path.join(
+        data_folder_path,
+        f"{folder_date}_DailySummary_2024_{station_name}_all_picks_filtered.csv",
+    )
     with open(all_picks_filtered_save_path, "w") as f:
         write = csv.writer(f, lineterminator="\n")
         write.writerows(all_picks_filtered_data)
