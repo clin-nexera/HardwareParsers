@@ -1,7 +1,9 @@
 import argparse
 import csv
+from genericpath import isfile
 import os
 from distutils.dir_util import copy_tree
+import shutil
 from tkfilebrowser import askopendirnames
 from tkinter.filedialog import askdirectory
 
@@ -101,6 +103,10 @@ if __name__ == "__main__":
         data_folder_path, f"{folder_date}_DailySummary_ParserData_{station_name}_2024"
     )
 
+    other_folder_path = os.path.join(
+        data_folder_path, f"{folder_date}_DailySummary_OtherFiles_{station_name}_2024"
+    )
+
     if not os.path.exists(csv_folder_path):
         os.makedirs(csv_folder_path)
 
@@ -115,10 +121,16 @@ if __name__ == "__main__":
         try:
             basename = os.path.basename(folder)
             exp_number = basename[:15]
-            lockout_path = os.path.join(folder, exp_number + "_lockout.txt")
 
+            # Copy CSVs
             csv_file_name = get_csv_file_name(folder)
             copy_tree(os.path.join(folder, csv_file_name), os.path.join(csv_folder_path,csv_file_name))
+
+            # Copy txt files
+            for file in os.listdir(folder):
+                full_path = os.path.join(folder, file)
+                if os.isfile(full_path):
+                    shutil.copy2(full_path, other_folder_path)
 
             csv_dfs = parse_data(folder)
 
