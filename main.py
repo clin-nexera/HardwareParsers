@@ -113,6 +113,9 @@ if __name__ == "__main__":
     if not os.path.exists(parsed_folder_path):
         os.makedirs(parsed_folder_path)
 
+    if not os.path.exists(other_folder_path):
+        os.makedirs(other_folder_path)
+
     summary_data = [SUMMARY_HEADERS]
     all_picks_data = [PICKS_HEADER]
     all_picks_filtered_data = [PICKS_HEADER]
