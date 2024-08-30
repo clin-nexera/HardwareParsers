@@ -132,7 +132,7 @@ if __name__ == "__main__":
             # Copy txt files
             for file in os.listdir(folder):
                 full_path = os.path.join(folder, file)
-                if os.isfile(full_path):
+                if os.path.isfile(full_path):
                     shutil.copy2(full_path, other_folder_path)
 
             csv_dfs = parse_data(folder)
