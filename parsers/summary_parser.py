@@ -47,7 +47,7 @@ def summarize_folder(has_pick_trigger, basename, csv_dfs, pick_attempts, total_l
 def get_start_dates(csv_dfs):
     csv = csv_dfs["pre_pick_process_states"]
     date = str(csv["pick_start_date"][0])
-    time = str(csv["pick_start_time"][0])
+    time = str(csv["pick_start_time"][0]).zfill(6)
     date_obj = datetime.strptime(date, "%Y%m%d")
     time_obj = datetime.strptime(time, "%H%M%S")
 
@@ -61,7 +61,7 @@ def get_end_dates(csv_dfs):
     csv = csv_dfs["post_pick_process_states"]
     num = len(csv["index"]) - 1
     date = str(object=csv["pick_end_date"][num])
-    time = str(csv["pick_end_time"][num])
+    time = str(csv["pick_end_time"][num]).zfill(6)
     date_obj = datetime.strptime(date, "%Y%m%d")
     time_obj = datetime.strptime(time, "%H%M%S")
 
