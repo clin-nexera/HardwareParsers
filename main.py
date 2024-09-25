@@ -1,6 +1,5 @@
 import argparse
 import csv
-from genericpath import isfile
 import os
 from distutils.dir_util import copy_tree
 import shutil
