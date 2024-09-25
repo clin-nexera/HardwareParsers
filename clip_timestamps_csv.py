@@ -1,12 +1,9 @@
 import os
 import pandas as pd
-import re
 from datetime import datetime, timedelta
 from tkinter.filedialog import askopenfilename, askdirectory
 
 from moviepy.editor import *
-
-VIDEO_CLIP_TIME_S = 10
 
 if __name__ == "__main__":
     video_path = askopenfilename(title="Select Video")
@@ -41,7 +38,7 @@ if __name__ == "__main__":
             continue
 
         event_time = datetime.strptime(
-            timestamp_data, "%Y\\%m\\%d_%H:%M:%S"
+            timestamp_data, "%Y%m%d_%H%M%S"
         )
         event_time_str = event_time.strftime("%Y-%m-%d_%H-%M_%S")
 
@@ -51,8 +48,8 @@ if __name__ == "__main__":
             )
             continue
 
-        event_time_start = event_time - timedelta(seconds=int(VIDEO_CLIP_TIME_S / 2))
-        event_time_end = event_time + timedelta(seconds=int(VIDEO_CLIP_TIME_S / 2))
+        event_time_start = event_time - timedelta(seconds=int(3))
+        event_time_end = event_time + timedelta(seconds=int(13))
 
         if event_time_start < clip_start_time:
             event_time_start = clip_start_time
