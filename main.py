@@ -30,11 +30,16 @@ SUMMARY_HEADERS = [
     "Magnetic",
     "UR",
     "EoP",
+    "Vacuum Success Rate",
+    "Magnetic Success Rate",
+    "UR Success Rate",
+    "EoP Success Rate",
     "Velocity",
     "Acceleration",
     "Num Incomplete Picks",
     "Total Picks",
     "Picks Per Hour",
+    "Average Pick Cycle Time",
 ]
 
 PICKS_HEADER = [
