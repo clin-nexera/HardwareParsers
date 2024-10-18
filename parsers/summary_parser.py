@@ -2,20 +2,17 @@ import os
 from datetime import datetime
 
 
-def summarize_folder(has_pick_trigger, basename, csv_dfs, pick_attempts, total_lockouts):
+def summarize_folder(has_fail_detection, basename, csv_dfs, pick_attempts, total_lockouts):
     total_picks = pick_attempts + total_lockouts
 
     success, fails = get_pick_counts(csv_dfs)
+    missed, dropped =  get_fail_counts(csv_dfs) if has_fail_detection else (0, 0)
     start_date, start_time = get_start_dates(csv_dfs)
     end_date, end_time = get_end_dates(csv_dfs)
 
     mode = get_gripper_mode(csv_dfs)
-    vacuum_count, magnetic_count, ur_count, eop_count = (
-        get_trigger_counts(csv_dfs) if has_pick_trigger else (None, None, None, None)
-    )
-    vacuum_success, magnetic_success, ur_success, eop_success = (
-        get_trigger_success_counts(csv_dfs) if has_pick_trigger else (None, None, None, None)
-    )
+    vacuum_count, magnetic_count, ur_count, eop_count = get_trigger_counts(csv_dfs)
+    vacuum_success, magnetic_success, ur_success, eop_success = get_trigger_success_counts(csv_dfs) 
 
     vel, acc = get_vel_acc(csv_dfs)
 
@@ -34,6 +31,8 @@ def summarize_folder(has_pick_trigger, basename, csv_dfs, pick_attempts, total_l
         float(success) / float(pick_attempts),
         success,
         fails,
+        missed,
+        dropped,
         float(vacuum_count) / float(pick_attempts),
         float(magnetic_count) / float(pick_attempts),
         float(ur_count) / float(pick_attempts),
@@ -104,6 +103,13 @@ def get_pick_counts(csv_dfs):
     successful = counts[True] if True in counts.keys() else 0
     failed_picks = counts[False] if False in counts.keys() else 0
     return successful, failed_picks
+
+
+def get_fail_counts(csv_dfs):
+    csv = csv_dfs["pick_execution"]
+    missed_pick = csv["is_missed_pick"].sum()
+    dropped_pick = csv["is_dropped_pick"].sum()
+    return missed_pick, dropped_pick
 
 
 def get_average_pick_time(csv_dfs):

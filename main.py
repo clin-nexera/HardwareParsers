@@ -22,6 +22,8 @@ SUMMARY_HEADERS = [
     "Success Rate",
     "Success",
     "Fails",
+    "Missed Picks",
+    "Dropped Picks",
     "Vacuum Rate",
     "Magnetic Rate",
     "UR Rate",
@@ -58,6 +60,8 @@ PICKS_HEADER = [
     "hor_acc",
     "pick_activation",
     "is_successful",
+    "is_missed_pick",
+    "is_dropped_pick",
     "pick_exec_time",
     "pick_end_date",
     "pick_end_time",
@@ -66,11 +70,11 @@ PICKS_HEADER = [
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-pt",
-        "--pick-trigger",
-        dest="pick_trigger",
+        "-fd",
+        "--fail-detection",
+        dest="fail_detection",
         action="store_true",
-        help="Is pick trigger implemented",
+        help="Is fail detection implemented",
     )
     parser.add_argument(
         "-nd",
@@ -81,7 +85,7 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    has_pick_trigger = args.pick_trigger
+    fail_detection = args.fail_detection
     is_network_drive = args.network_drive
 
     folder_date = input("Enter date (E.g. Aug29)\n")
@@ -143,14 +147,14 @@ if __name__ == "__main__":
 
             # Per Pick
             total_picks, total_lockouts, pick_data_all, pick_data_filtered = (
-                aggregate_pick_data(csv_dfs)
+                aggregate_pick_data(csv_dfs, fail_detection)
             )
             all_picks_data.extend(pick_data_all)
             all_picks_filtered_data.extend(pick_data_filtered)
 
             # Summary
             row = summarize_folder(
-                has_pick_trigger, basename, csv_dfs, total_picks, total_lockouts
+                fail_detection, basename, csv_dfs, total_picks, total_lockouts
             )
             summary_data.append(row)
 

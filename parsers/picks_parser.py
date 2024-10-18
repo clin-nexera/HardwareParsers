@@ -1,7 +1,8 @@
 from datetime import datetime
 
+
 ### FUNCTIONS ###
-def aggregate_pick_data(csv_dfs):
+def aggregate_pick_data(csv_dfs, has_fail_detection):
     data_all = []
     data_filtered = []
     pick_ids = get_all_pick_ids(csv_dfs)
@@ -12,8 +13,8 @@ def aggregate_pick_data(csv_dfs):
         pick_id = pick_id
         pick_start_date = get_pick_start_date(csv_dfs, pick_id)
         pick_start_time = get_pick_start_time(csv_dfs, pick_id)
-        capture_count = idx 
-        pick_attempts = get_pick_attempts(csv_dfs, pick_id) 
+        capture_count = idx
+        pick_attempts = get_pick_attempts(csv_dfs, pick_id)
         bin_region = get_bin_region(csv_dfs, pick_id)
 
         gen_source = get_gen_source(csv_dfs, pick_id)
@@ -26,6 +27,8 @@ def aggregate_pick_data(csv_dfs):
 
         pick_activation = get_pick_activation(csv_dfs, pick_id)
         is_successful = get_is_successful(csv_dfs, pick_id)
+        is_missed = get_is_missed(csv_dfs, pick_id) if has_fail_detection else "NA"
+        is_dropped = get_is_dropped(csv_dfs, pick_id) if has_fail_detection else "NA"
         pick_execution_time = get_pick_exec_time(csv_dfs, pick_id)
 
         pick_end_date = get_pick_end_date(csv_dfs, pick_id)
@@ -44,7 +47,7 @@ def aggregate_pick_data(csv_dfs):
             capture_count,
             pick_attempts,
             total_picks,
-            num_lockouts, 
+            num_lockouts,
             bin_region,
             gen_source,
             bin_empty,
@@ -53,6 +56,8 @@ def aggregate_pick_data(csv_dfs):
             accerlation,
             pick_activation,
             is_successful,
+            is_missed,
+            is_dropped,
             pick_execution_time,
             pick_end_date,
             pick_end_time,
@@ -123,6 +128,14 @@ def get_gripper_num(csv_dfs, pick_id):
 
 def get_is_successful(csv_dfs, pick_id):
     return get_pick_exec_var_for_pick(csv_dfs, pick_id, "is_successful_pick")
+
+
+def get_is_missed(csv_dfs, pick_id):
+    return get_pick_exec_var_for_pick(csv_dfs, pick_id, "is_missed_pick")
+
+
+def get_is_dropped(csv_dfs, pick_id):
+    return get_pick_exec_var_for_pick(csv_dfs, pick_id, "is_dropped_pick")
 
 
 def get_pick_activation(csv_dfs, pick_id):
