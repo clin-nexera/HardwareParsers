@@ -139,7 +139,7 @@ def get_trigger_success_counts(csv_dfs):
         (csv["pick_activation"] == "Vacuum") & (csv["is_successful_pick"] == True)
     ].count()["is_successful_pick"]
     magnetic = csv[
-        (csv["pick_activation"] == "Magnetic") & (csv["is_successful_pick"] == True)
+        (csv["pick_activation"] == "Magnetic Sensor") & (csv["is_successful_pick"] == True)
     ].count()["is_successful_pick"]
     ur = csv[(csv["pick_activation"] == "UR") & (csv["is_successful_pick"] == True)].count()[
         "is_successful_pick"
