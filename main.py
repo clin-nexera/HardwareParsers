@@ -180,14 +180,14 @@ if __name__ == "__main__":
             print(str(e))
 
     summary_save_path = os.path.join(
-        data_folder_path, f"{folder_date}_DailySummary_2024_{station_name}_summary.csv"
+        data_folder_path, f"{folder_date}_DailySummary_2025_{station_name}_summary.csv"
     )
     with open(summary_save_path, "w") as f:
         write = csv.writer(f, lineterminator="\n")
         write.writerows(summary_data)
 
     all_picks_save_path = os.path.join(
-        data_folder_path, f"{folder_date}_DailySummary_2024_{station_name}_all_picks.csv"
+        data_folder_path, f"{folder_date}_DailySummary_2025_{station_name}_all_picks.csv"
     )
     with open(all_picks_save_path, "w") as f:
         write = csv.writer(f, lineterminator="\n")
@@ -195,7 +195,7 @@ if __name__ == "__main__":
 
     all_picks_filtered_save_path = os.path.join(
         data_folder_path,
-        f"{folder_date}_DailySummary_2024_{station_name}_all_picks_filtered.csv",
+        f"{folder_date}_DailySummary_2025_{station_name}_all_picks_filtered.csv",
     )
     with open(all_picks_filtered_save_path, "w") as f:
         write = csv.writer(f, lineterminator="\n")
