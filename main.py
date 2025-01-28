@@ -160,7 +160,7 @@ if __name__ == "__main__":
 
             save_path = os.path.join(
                 parsed_folder_path,
-                f"{folder_date}_DailySummary_{station_name}_2024_{basename}_all.csv",
+                f"{folder_date}_DailySummary_{station_name}_2025_{basename}_all.csv",
             )
             with open(save_path, "w") as f:
                 write = csv.writer(f, lineterminator="\n")
@@ -169,7 +169,7 @@ if __name__ == "__main__":
 
             save_path = os.path.join(
                 parsed_folder_path,
-                f"{folder_date}_DailySummary_{station_name}_2024_{basename}_filtered.csv",
+                f"{folder_date}_DailySummary_{station_name}_2025_{basename}_filtered.csv",
             )
             with open(save_path, "w") as f:
                 write = csv.writer(f, lineterminator="\n")
