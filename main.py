@@ -102,17 +102,17 @@ if __name__ == "__main__":
         folders = askopendirnames(title="Select Experiment Folders")
 
     data_folder_path = os.path.join(
-        save_folder, f"{folder_date}_DailySummary_{station_name}_2024"
+        save_folder, f"{folder_date}_DailySummary_{station_name}_2025"
     )
     csv_folder_path = os.path.join(
-        data_folder_path, f"{folder_date}_DailySummary_CSVData_{station_name}_2024"
+        data_folder_path, f"{folder_date}_DailySummary_CSVData_{station_name}_2025"
     )
     parsed_folder_path = os.path.join(
-        data_folder_path, f"{folder_date}_DailySummary_ParserData_{station_name}_2024"
+        data_folder_path, f"{folder_date}_DailySummary_ParserData_{station_name}_2025"
     )
 
     other_folder_path = os.path.join(
-        data_folder_path, f"{folder_date}_DailySummary_OtherFiles_{station_name}_2024"
+        data_folder_path, f"{folder_date}_DailySummary_OtherFiles_{station_name}_2025"
     )
 
     if not os.path.exists(csv_folder_path):
